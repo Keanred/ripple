@@ -1,0 +1,36 @@
+{
+  "name": "ripple",
+  "version": "0.0.1",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Keanred/ripple.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Keanred/ripple/issues"
+  },
+  "homepage": "https://github.com/Keanred/ripple#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "@types/ws": "^8.18.1",
+    "eslint": "^10.0.3",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
+    "vitest": "^4.1.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
+  }
+}
