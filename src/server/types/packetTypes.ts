@@ -1,5 +1,5 @@
 // Broadcast to room when someone sends a message
-type ChatPacket = {
+export type ChatPacket = {
   type: "chat";
   username: string;
   content: string;

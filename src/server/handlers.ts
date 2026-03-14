@@ -1,21 +1,25 @@
 import WebSocket from 'ws';
 import { clients, broadcastToRoom, getClientState, requireClientState } from './clients';
+import { sendHistory } from './history';
+import { saveMessage } from './db';
 
-export function handleJoin(ws: WebSocket, username: string, room: string) {
+export const handleJoin = (ws: WebSocket, username: string, room: string) => {
   clients.set(ws, { username, room });
+  sendHistory(ws, room);
   console.log(`[server] ${username} joined room '${room}'`);
   broadcastToRoom(room, {
     type: "event",
     content: `${username} joined the room`,
     timestamp: Date.now()
   }, ws);
-}
+};
 
-export function handleMessage(ws: WebSocket, content: string) {
+export const handleMessage = (ws: WebSocket, content: string) => {
   const state = requireClientState(ws);
   if (!state) return;
 
   console.log(`[server] ${state.username} in '${state.room}': ${content}`);
+  saveMessage(state.room, state.username, content);
   broadcastToRoom(state.room, {
     type: "chat",
     username: state.username,
@@ -23,9 +27,9 @@ export function handleMessage(ws: WebSocket, content: string) {
     room: state.room,
     timestamp: Date.now()
   });
-}
+};
 
-export function handleSwitchRoom(ws: WebSocket, newRoom: string) {
+export const handleSwitchRoom = (ws: WebSocket, newRoom: string) => {
   const state = requireClientState(ws);
   if (!state) return;
 
@@ -44,9 +48,9 @@ export function handleSwitchRoom(ws: WebSocket, newRoom: string) {
     content: `${state.username} joined the room`,
     timestamp: Date.now()
   }, ws);
-}
+};
 
-export function handleDisconnect(ws: WebSocket) {
+export const handleDisconnect = (ws: WebSocket) => {
   const state = getClientState(ws);
   console.log(`[server] Client disconnected${state ? ` (${state.username} in '${state.room}')` : ""}`);
   if (state) {
@@ -57,4 +61,4 @@ export function handleDisconnect(ws: WebSocket) {
     }, ws);
     clients.delete(ws);
   }
-}
+};
