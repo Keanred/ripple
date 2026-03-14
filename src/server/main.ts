@@ -15,10 +15,15 @@ wss.on('connection', (ws) => {
   });
 
   ws.on('message', (message) => {
-    console.log('Received message:', message.toString());
+    const parsedMessage: ServerPacket = JSON.parse(message.toString());
+    if (parsedMessage.type === 'event') {
+      console.log(`Event: ${parsedMessage.content}`);
+    }
+
+    console.log(parsedMessage);
     wss.clients.forEach((client) => {
       if (client.readyState === Websocket.OPEN) {
-        ws.send(message.toString());
+        ws.send(JSON.stringify(parsedMessage.content));
       }
     });
   });

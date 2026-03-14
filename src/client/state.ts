@@ -1,0 +1,22 @@
+import { Interface, createInterface } from "readline";
+import { CLICommand, getCommands } from "./commands";
+import config from "../config";
+import { WebSocket } from "ws";
+
+export type State = {
+  commands: Record<string, CLICommand>;
+  readlineInterface: Interface;
+  ws: WebSocket;
+};
+
+export function initState(): State {
+  return {
+    commands: getCommands(),
+    readlineInterface: createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      prompt: "Chat > ",
+    }),
+    ws: new WebSocket(`ws://${config.address}:${config.port}`),
+  };
+}
