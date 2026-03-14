@@ -1,37 +1,66 @@
 import express from 'express';
 import { createServer } from 'http';
-import Websocket, { WebSocketServer } from 'ws';
+import WebSocket, { WebSocketServer } from 'ws';
 import config from '../config';
+import type { ClientPacket } from './types/packetTypes';
 
 const app = express();
 const httpServer = createServer(app);
 const wss = new WebSocketServer({ server: httpServer });
 
-wss.on('connection', (ws) => {
-  console.log('New client connected');
 
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
+type ClientState = {
+  username: string;
+  room: string;
+};
 
-  ws.on('message', (message) => {
-    const parsedMessage: ServerPacket = JSON.parse(message.toString());
-    if (parsedMessage.type === 'event') {
-      console.log(`Event: ${parsedMessage.content}`);
+const clients = new Map<WebSocket, ClientState>();
+
+// on MessagePacket
+const state = clients.get(ws);
+// state.username is available here
+
+wss.on("connection", (ws) => {
+  // client just connected, not in a room yet
+
+  ws.on("message", (data) => {
+    const packet: ClientPacket = JSON.parse(data.toString());
+
+    switch (packet.type) {
+      case "join":
+        clients.set(ws, { username: packet.username, room: packet.room });
+        //joinRoom(ws, packet.room);
+        break;
+
+      case "message":
+        const state = clients.get(ws);
+        if (!state) {
+          send(ws, { type: "error", message: "You must join a room first" });
+          return;
+        }
+        broadcastToRoom(state.room, {
+          type: "chat",
+          username: state.username,
+          content: packet.content,
+          room: state.room,
+          timestamp: Date.now()
+        }, ws);
+        break;
+
+      case "switch_room":
+        // handle room switch
+        break;
     }
-
-    console.log(parsedMessage);
-    wss.clients.forEach((client) => {
-      if (client.readyState === Websocket.OPEN) {
-        ws.send(JSON.stringify(parsedMessage.content));
-      }
-    });
   });
-  ws.on('error', (error) => {
-    console.error('WebSocket error:', error);
+
+  ws.on("close", () => {
+    const state = clients.get(ws);
+    if (state) {
+      leaveRoom(ws, state.room);
+      clients.delete(ws);
+    }
   });
 });
-
 httpServer.listen(config.port, () => {
   console.log(`Server is listening on port ${config.port}`);
 });

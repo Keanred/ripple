@@ -9,8 +9,8 @@ export type CLICommand = {
 
 export const getCommands = (): Record<string, CLICommand> => {
   return {
-    exit: {
-      name: "/exit",
+    "/exit": {
+      name: "exit",
       description: "Exits the application",
       callback: commandExit,
     },
