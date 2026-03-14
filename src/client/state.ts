@@ -7,6 +7,8 @@ export type State = {
   commands: Record<string, CLICommand>;
   readlineInterface: Interface;
   ws: WebSocket;
+  username: string;
+  room: string;
 };
 
 export function initState(): State {
@@ -18,5 +20,7 @@ export function initState(): State {
       prompt: "Chat > ",
     }),
     ws: new WebSocket(`ws://${config.address}:${config.port}`),
+    username: "",
+    room: "",
   };
 }

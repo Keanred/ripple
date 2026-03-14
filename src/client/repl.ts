@@ -1,19 +1,41 @@
 import { State } from "./state";
 import readline from "readline";
 import { cleanInput } from "./inputUtils";
+import type { JoinPacket, MessagePacket } from "./types/packetTypes";
+
+function promptQuestion(rl: readline.Interface, question: string): Promise<string> {
+  return new Promise((resolve) => rl.question(question, resolve));
+}
 
 export function startREPL(state: State) {
-  state.ws.on("open", () => {
+  state.ws.on("open", async () => {
     console.log("Connected to server");
+
+    const username = (await promptQuestion(state.readlineInterface, "Enter username: ")).trim();
+    const room = (await promptQuestion(state.readlineInterface, "Enter room: ")).trim();
+
+    state.username = username;
+    state.room = room;
+
+    const joinPacket: JoinPacket = {
+      type: "join",
+      username: state.username,
+      room: state.room,
+    };
+    state.ws.send(JSON.stringify(joinPacket));
+    console.log(`Joined room "${state.room}" as "${state.username}"`);
+
     state.readlineInterface.prompt();
     state.readlineInterface.on("line", async (input) => {
       const userInput = cleanInput(input);
       if (userInput.length === 0) {
         state.readlineInterface.prompt();
+        return;
       }
-      if (userInput[0] in state.commands) {
+      const command = userInput[0].toLowerCase();
+      if (command in state.commands) {
         try {
-          await state.commands[userInput[0]].callback(state, userInput[1] || "");
+          await state.commands[command].callback(state, ...userInput.slice(1));
         } catch (error) {
           console.error(`Error executing command: ${error}`);
         }

@@ -1,20 +1,20 @@
 // Sent when a user first connects and picks a username + room
-type JoinPacket = {
+export type JoinPacket = {
   type: "join";
   username: string;
   room: string;
 };
 
 // Sent when a user sends a chat message
-type MessagePacket = {
+export type MessagePacket = {
   type: "message";
   content: string;
 };
 
 // Sent when a user wants to switch rooms
-type SwitchRoomPacket = {
+export type SwitchRoomPacket = {
   type: "switch_room";
   room: string;
 };
 
-type ClientPacket = JoinPacket | MessagePacket | SwitchRoomPacket;
+export type ClientPacket = JoinPacket | MessagePacket | SwitchRoomPacket;
