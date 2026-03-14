@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import Websocket, { WebSocketServer } from 'ws';
-import config from './config.js';
+import config from '../config';
 
 const app = express();
 const httpServer = createServer(app);
@@ -9,20 +9,21 @@ const wss = new WebSocketServer({ server: httpServer });
 
 wss.on('connection', (ws) => {
   console.log('New client connected');
-  ws.on('message', (message) => {
-    console.log(message);
-  });
 
   ws.on('close', () => {
     console.log('Client disconnected');
   });
 
-  ws.on('message', () => {
+  ws.on('message', (message) => {
+    console.log('Received message:', message.toString());
     wss.clients.forEach((client) => {
-      if (client !== ws && client.readyState === Websocket.OPEN) {
-        client.send('Hello from the server!');
+      if (client.readyState === Websocket.OPEN) {
+        ws.send(message.toString());
       }
     });
+  });
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
   });
 });
 
