@@ -4,6 +4,7 @@ import { WebSocketServer } from 'ws';
 import config from '../config';
 import type { ClientPacket } from './types/packetTypes';
 import { handleJoin, handleMessage, handleSwitchRoom, handleDisconnect } from './handlers';
+import { send } from './clients';
 
 const app = express();
 const httpServer = createServer(app);
@@ -13,6 +14,7 @@ wss.on("connection", (ws) => {
   console.log("[server] New client connected");
 
   ws.on("message", (data) => {
+    try {
     const packet: ClientPacket = JSON.parse(data.toString());
     console.log("[server] Received packet:", packet);
 
@@ -26,6 +28,13 @@ wss.on("connection", (ws) => {
       case "switch_room":
         handleSwitchRoom(ws, packet.room);
         break;
+    }
+    } catch (err) {
+      send(ws, {
+        type: "error",
+        message: "Invalid packet format"
+      });
+      console.error("[server] Error processing packet:", err);
     }
   });
 

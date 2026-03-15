@@ -1,10 +1,14 @@
 import WebSocket from 'ws';
-import { clients, broadcastToRoom, getClientState, requireClientState } from './clients';
+import { rooms, clients, broadcastToRoom, getClientState, requireClientState } from './clients';
 import { sendHistory } from './history';
 import { saveMessage } from './db';
 
-export const handleJoin = (ws: WebSocket, username: string, room: string) => {
+export const handleJoin = (ws: WebSocket, username: string, room: string): void => {
   clients.set(ws, { username, room });
+  if (!rooms.has(room)) {
+    rooms.set(room, new Set());
+  }
+  rooms.get(room)!.add(ws);
   sendHistory(ws, room);
   console.log(`[server] ${username} joined room '${room}'`);
   broadcastToRoom(room, {
@@ -14,7 +18,7 @@ export const handleJoin = (ws: WebSocket, username: string, room: string) => {
   }, ws);
 };
 
-export const handleMessage = (ws: WebSocket, content: string) => {
+export const handleMessage = (ws: WebSocket, content: string): void => {
   const state = requireClientState(ws);
   if (!state) return;
 
@@ -29,12 +33,13 @@ export const handleMessage = (ws: WebSocket, content: string) => {
   });
 };
 
-export const handleSwitchRoom = (ws: WebSocket, newRoom: string) => {
+export const handleSwitchRoom = (ws: WebSocket, newRoom: string): void => {
   const state = requireClientState(ws);
   if (!state) return;
 
   const oldRoom = state.room;
   clients.set(ws, { ...state, room: "" });
+  rooms.get(oldRoom)?.delete(ws);
   broadcastToRoom(oldRoom, {
     type: "event",
     content: `${state.username} left the room`,
@@ -42,6 +47,11 @@ export const handleSwitchRoom = (ws: WebSocket, newRoom: string) => {
   }, ws);
 
   clients.set(ws, { ...state, room: newRoom });
+  if (!rooms.has(newRoom)) {
+    rooms.set(newRoom, new Set());
+  }
+  rooms.get(newRoom)!.add(ws);
+  sendHistory(ws, newRoom);
   console.log(`[server] ${state.username} switched from '${oldRoom}' to '${newRoom}'`);
   broadcastToRoom(newRoom, {
     type: "event",
@@ -50,10 +60,11 @@ export const handleSwitchRoom = (ws: WebSocket, newRoom: string) => {
   }, ws);
 };
 
-export const handleDisconnect = (ws: WebSocket) => {
+export const handleDisconnect = (ws: WebSocket): void => {
   const state = getClientState(ws);
   console.log(`[server] Client disconnected${state ? ` (${state.username} in '${state.room}')` : ""}`);
   if (state) {
+    rooms.get(state.room)?.delete(ws);
     broadcastToRoom(state.room, {
       type: "event",
       content: `${state.username} left the room`,

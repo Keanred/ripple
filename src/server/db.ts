@@ -18,7 +18,7 @@ const insert = db.prepare(`
   VALUES (@room, @username, @content, @timestamp)
 `);
 
-export const getHistory = db.prepare(`
+const getHistory = db.prepare(`
   SELECT room, username, content, timestamp
   FROM messages
   WHERE room = ?
@@ -26,7 +26,7 @@ export const getHistory = db.prepare(`
   LIMIT 100
 `);
 
-export const saveMessage = (room: string, username: string, content: string) => {
+export const saveMessage = (room: string, username: string, content: string): void => {
   insert.run({ room, username, content, timestamp: Date.now() });
 };
 
