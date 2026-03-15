@@ -18,6 +18,7 @@ export default tseslint.config(
       },
     },
     rules: {
+      'max-len': ['warn', { code: 120 }],
       'prettier/prettier': 'error',
       eqeqeq: 'error',
       complexity: ['warn', 7],

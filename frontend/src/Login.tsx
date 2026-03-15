@@ -4,15 +4,39 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import type { ClientPacket } from './types/packetTypes';
+import { useChatContext } from './ChatContext';
 
 type LoginProps = {
-  onLogin: () => void;
+  connected: boolean;
+  send: (packet: ClientPacket) => void;
+  setLoggedIn: (loggedIn: boolean) => void;
 };
 
-export const Login: React.FC<LoginProps> = (props) => {
-  const { onLogin } = props;
-  const [username, setUsername] = React.useState('');
-  const [room, setRoom] = React.useState('');
+export const Login: React.FC<LoginProps> = ({ connected, send, setLoggedIn }) => {
+  const [usernameInput, setUsernameInput] = React.useState('');
+  const [roomInput, setRoomInput] = React.useState('');
+  const { setUsername, setRoom } = useChatContext();
+
+  const onLogin = () => {
+    if (!connected) {
+      if (usernameInput.trim() === '' || roomInput.trim() === '') {
+        alert('Please enter both username and room.');
+        return;
+      }
+      setUsername(usernameInput);
+      setRoom(roomInput);
+      const packet: ClientPacket = {
+        type: 'join',
+        username: usernameInput,
+        room: roomInput,
+      };
+      send(packet);
+      setLoggedIn(true);
+    } else {
+      alert('Already connected!');
+    }
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh" bgcolor="background.default">
@@ -25,16 +49,16 @@ export const Login: React.FC<LoginProps> = (props) => {
           variant="outlined"
           fullWidth
           margin="normal"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
+          value={usernameInput}
+          onChange={e => setUsernameInput(e.target.value)}
         />
         <TextField
           label="Room"
           variant="outlined"
           fullWidth
           margin="normal"
-          value={room}
-          onChange={e => setRoom(e.target.value)}
+          value={roomInput}
+          onChange={e => setRoomInput(e.target.value)}
         />
         <Button
           variant="contained"

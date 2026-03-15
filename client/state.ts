@@ -1,6 +1,6 @@
 import { Interface, createInterface } from "readline";
 import { CLICommand, getCommands } from "./commands";
-import config from "../config";
+import config from "./config";
 import { WebSocket } from "ws";
 
 export type State = {
