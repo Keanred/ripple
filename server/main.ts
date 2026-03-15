@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
-import config from '../../server/config';
+import config from '../config';
 import type { ClientPacket } from './types/packetTypes';
 import { handleJoin, handleMessage, handleSwitchRoom, handleDisconnect } from './handlers';
 import { send } from './clients';
