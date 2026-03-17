@@ -3,13 +3,22 @@
     "baseUrl": ".",
     "target": "esnext",
     "module": "esnext",
-    "rootDir": "./src",
+    "rootDirs": ["./server", "./client"],
     "outDir": "./dist",
     "strict": true,
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["./src/**/*.ts", "server/config.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "server/**/*.ts",
+    "server/**/*.tsx",
+    "server/**/*.mts",
+    "server/**/*.cts",
+    "client/**/*.ts",
+    "client/**/*.tsx",
+    "client/**/*.mts",
+    "client/**/*.cts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }
