@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import type { ClientPacket, ServerPacket } from "../types/packetTypes";
-import config from "../../../server/config"
+import { useEffect, useRef, useState } from 'react';
+import config from '../../../server/config';
+import type { ClientPacket, ServerPacket } from '../types/packetTypes';
 
 export const useChat = () => {
   const ws = useRef<WebSocket | null>(null);
@@ -8,7 +8,7 @@ export const useChat = () => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    ws.current = new WebSocket(`ws://localhosts:${config.port}`);
+    ws.current = new WebSocket(`ws://localhost:${config.port}`);
 
     ws.current.onopen = () => setConnected(true);
 

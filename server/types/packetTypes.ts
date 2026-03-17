@@ -1,6 +1,6 @@
 // Broadcast to room when someone sends a message
 export type ChatPacket = {
-  type: "chat";
+  type: 'chat';
   username: string;
   content: string;
   room: string;
@@ -9,14 +9,14 @@ export type ChatPacket = {
 
 // Broadcast to room when someone joins or leaves
 type EventPacket = {
-  type: "event";
+  type: 'event';
   content: string; // e.g. "Alice joined the room"
   timestamp: number;
 };
 
 // Sent to a client if something goes wrong
 type ErrorPacket = {
-  type: "error";
+  type: 'error';
   message: string;
 };
 
@@ -24,20 +24,20 @@ export type ServerPacket = ChatPacket | EventPacket | ErrorPacket;
 
 // Sent when a user first connects and picks a username + room
 type JoinPacket = {
-  type: "join";
+  type: 'join';
   username: string;
   room: string;
 };
 
 // Sent when a user sends a chat message
 type MessagePacket = {
-  type: "message";
+  type: 'message';
   content: string;
 };
 
 // Sent when a user wants to switch rooms
 type SwitchRoomPacket = {
-  type: "switch_room";
+  type: 'switch_room';
   room: string;
 };
 

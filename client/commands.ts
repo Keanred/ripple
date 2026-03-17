@@ -1,6 +1,6 @@
-import { commandExit } from "./exit";
-import { commandSwitch } from "./switch";
-import { State } from "./state";
+import { commandExit } from './exit';
+import { State } from './state';
+import { commandSwitch } from './switch';
 
 export type CLICommand = {
   name: string;
@@ -10,14 +10,14 @@ export type CLICommand = {
 
 export const getCommands = (): Record<string, CLICommand> => {
   return {
-    "/exit": {
-      name: "exit",
-      description: "Exits the application",
+    '/exit': {
+      name: 'exit',
+      description: 'Exits the application',
       callback: commandExit,
     },
-    "/switch": {
-      name: "switch",
-      description: "Switch to a different room (usage: /switch <room>)",
+    '/switch': {
+      name: 'switch',
+      description: 'Switch to a different room (usage: /switch <room>)',
       callback: commandSwitch,
     },
   };

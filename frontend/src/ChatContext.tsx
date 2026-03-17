@@ -13,11 +13,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const [username, setUsername] = useState('');
   const [room, setRoom] = useState('');
 
-  return (
-    <ChatContext.Provider value={{ username, setUsername, room, setRoom }}>
-      {children}
-    </ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={{ username, setUsername, room, setRoom }}>{children}</ChatContext.Provider>;
 };
 
 export const useChatContext = () => {

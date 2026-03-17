@@ -1,9 +1,9 @@
-import { Login } from './Login';
-import { Chat } from './Chat';
-import { useChat } from './hooks/useChat';
-import { useState } from 'react';
-import { ChatProvider } from './ChatContext';
 import { Stack } from '@mui/material';
+import { useState } from 'react';
+import { Chat } from './Chat';
+import { ChatProvider } from './ChatContext';
+import { useChat } from './hooks/useChat';
+import { Login } from './Login';
 
 function App() {
   const { messages, connected, send, clearMessages } = useChat();

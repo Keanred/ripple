@@ -29,8 +29,8 @@ export const getClientState = (ws: WebSocket): ClientState | undefined => {
 export const requireClientState = (ws: WebSocket): ClientState | undefined => {
   const state = getClientState(ws);
   if (!state) {
-    console.log("[server] Request from unknown client, rejecting");
-    send(ws, { type: "error", message: "You must join a room first" });
+    console.log('[server] Request from unknown client, rejecting');
+    send(ws, { type: 'error', message: 'You must join a room first' });
     return undefined;
   }
   return state;

@@ -1,44 +1,44 @@
 import express from 'express';
 import { createServer } from 'http';
 import { WebSocketServer } from 'ws';
-import config from './config';
-import type { ClientPacket } from './types/packetTypes';
-import { handleJoin, handleMessage, handleSwitchRoom, handleDisconnect } from './handlers';
 import { send } from './clients';
+import config from './config';
+import { handleDisconnect, handleJoin, handleMessage, handleSwitchRoom } from './handlers';
+import type { ClientPacket } from './types/packetTypes';
 
 const app = express();
 const httpServer = createServer(app);
 const wss = new WebSocketServer({ server: httpServer });
 
-wss.on("connection", (ws) => {
-  console.log("[server] New client connected");
+wss.on('connection', (ws) => {
+  console.log('[server] New client connected');
 
-  ws.on("message", (data) => {
+  ws.on('message', (data) => {
     try {
-    const packet: ClientPacket = JSON.parse(data.toString());
-    console.log("[server] Received packet:", packet);
+      const packet: ClientPacket = JSON.parse(data.toString());
+      console.log('[server] Received packet:', packet);
 
-    switch (packet.type) {
-      case "join":
-        handleJoin(ws, packet.username, packet.room);
-        break;
-      case "message":
-        handleMessage(ws, packet.content);
-        break;
-      case "switch_room":
-        handleSwitchRoom(ws, packet.room);
-        break;
-    }
+      switch (packet.type) {
+        case 'join':
+          handleJoin(ws, packet.username, packet.room);
+          break;
+        case 'message':
+          handleMessage(ws, packet.content);
+          break;
+        case 'switch_room':
+          handleSwitchRoom(ws, packet.room);
+          break;
+      }
     } catch (err) {
       send(ws, {
-        type: "error",
-        message: "Invalid packet format"
+        type: 'error',
+        message: 'Invalid packet format',
       });
-      console.error("[server] Error processing packet:", err);
+      console.error('[server] Error processing packet:', err);
     }
   });
 
-  ws.on("close", () => handleDisconnect(ws));
+  ws.on('close', () => handleDisconnect(ws));
 });
 
 httpServer.listen(config.port, () => {

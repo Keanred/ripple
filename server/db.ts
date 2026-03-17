@@ -1,7 +1,7 @@
-import Database from "better-sqlite3";
-import { ChatPacket } from "./types/packetTypes";
+import Database from 'better-sqlite3';
+import { ChatPacket } from './types/packetTypes';
 
-const db = new Database("chat.db");
+const db = new Database('chat.db');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS messages (
@@ -31,10 +31,9 @@ export const saveMessage = (room: string, username: string, content: string): vo
 };
 
 export const getRecentMessages = (room: string): ChatPacket[] => {
-  const rows = getHistory.all(room) as Omit<ChatPacket, "type">[];
-  return rows.map(row => ({
-    type: "chat",
-    ...row
+  const rows = getHistory.all(room) as Omit<ChatPacket, 'type'>[];
+  return rows.map((row) => ({
+    type: 'chat',
+    ...row,
   }));
 };
-

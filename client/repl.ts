@@ -1,24 +1,24 @@
-import { State } from "./state";
-import readline from "readline";
-import { cleanInput } from "./inputUtils";
-import type { JoinPacket, MessagePacket } from "./types/packetTypes";
+import readline from 'readline';
+import { cleanInput } from './inputUtils';
+import { State } from './state';
+import type { JoinPacket, MessagePacket } from './types/packetTypes';
 
 function promptQuestion(rl: readline.Interface, question: string): Promise<string> {
   return new Promise((resolve) => rl.question(question, resolve));
 }
 
 export function startREPL(state: State) {
-  state.ws.on("open", async () => {
-    console.log("Connected to server");
+  state.ws.on('open', async () => {
+    console.log('Connected to server');
 
-    const username = (await promptQuestion(state.readlineInterface, "Enter username: ")).trim();
-    const room = (await promptQuestion(state.readlineInterface, "Enter room: ")).trim();
+    const username = (await promptQuestion(state.readlineInterface, 'Enter username: ')).trim();
+    const room = (await promptQuestion(state.readlineInterface, 'Enter room: ')).trim();
 
     state.username = username;
     state.room = room;
 
     const joinPacket: JoinPacket = {
-      type: "join",
+      type: 'join',
       username: state.username,
       room: state.room,
     };
@@ -26,7 +26,7 @@ export function startREPL(state: State) {
     console.log(`Joined room "${state.room}" as "${state.username}"`);
 
     state.readlineInterface.prompt();
-    state.readlineInterface.on("line", async (input) => {
+    state.readlineInterface.on('line', async (input) => {
       const userInput = cleanInput(input);
       if (userInput.length === 0) {
         state.readlineInterface.prompt();
@@ -41,8 +41,8 @@ export function startREPL(state: State) {
         }
       } else {
         const message: MessagePacket = {
-          type: "message",
-          content: userInput.join(" "),
+          type: 'message',
+          content: userInput.join(' '),
         };
         state.ws.send(JSON.stringify(message));
       }
@@ -50,19 +50,18 @@ export function startREPL(state: State) {
     });
   });
 
-
-  state.ws.on("message", (message) => {
+  state.ws.on('message', (message) => {
     readline.clearLine(process.stdout, 0);
     readline.cursorTo(process.stdout, 0);
     process.stdout.write(`Received: ${message.toString()}\n`);
     state.readlineInterface.prompt();
   });
 
-  state.ws.on("close", () => {
-    console.log("Disconnected from server");
+  state.ws.on('close', () => {
+    console.log('Disconnected from server');
   });
 
-  state.ws.on("error", (error) => {
-    console.error("WebSocket error:", error);
+  state.ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
   });
 }

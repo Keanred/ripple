@@ -1,7 +1,7 @@
-import { WebSocket } from "ws";
-import { getRecentMessages } from "./db";
-import { send } from "./clients";
-import { ChatPacket } from "./types/packetTypes";
+import { WebSocket } from 'ws';
+import { send } from './clients';
+import { getRecentMessages } from './db';
+import { ChatPacket } from './types/packetTypes';
 
 export const sendHistory = (ws: WebSocket, room: string) => {
   const messages: ChatPacket[] = getRecentMessages(room);

@@ -1,7 +1,7 @@
-import { Interface, createInterface } from "readline";
-import { CLICommand, getCommands } from "./commands";
-import config from "./config";
-import { WebSocket } from "ws";
+import { Interface, createInterface } from 'readline';
+import { WebSocket } from 'ws';
+import { CLICommand, getCommands } from './commands';
+import config from './config';
 
 export type State = {
   commands: Record<string, CLICommand>;
@@ -17,10 +17,10 @@ export function initState(): State {
     readlineInterface: createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: "Chat > ",
+      prompt: 'Chat > ',
     }),
     ws: new WebSocket(`ws://${config.address}:${config.port}`),
-    username: "",
-    room: "",
+    username: '',
+    room: '',
   };
 }
