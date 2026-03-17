@@ -1,13 +1,15 @@
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-plugin-prettier';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
-export default tseslint.config(
-  ...tseslint.configs.recommended,
+export default defineConfig([
+  globalIgnores(['**/*.js', 'node_modules', 'dist']),
   {
     files: ['**/*.ts', '**/*.tsx'],
     plugins: {
       prettier,
     },
+    extends: [...tseslint.configs.recommended],
     languageOptions: {
       parserOptions: {
         project: './tsconfig.json',
@@ -47,6 +49,5 @@ export default tseslint.config(
       'no-with': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
     },
-    ignores: ['**/*.js', 'node_modules', 'dist'],
   },
-);
+]);

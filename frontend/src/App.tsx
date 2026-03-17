@@ -1,18 +1,17 @@
 import { Login } from './Login';
 import { Chat } from './Chat';
 import { useChat } from './hooks/useChat';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChatProvider } from './ChatContext';
 
 function App() {
-  let { messages, connected, send } = useChat();
+  const { messages, connected, send, clearMessages } = useChat();
   const [loggedIn, setLoggedIn] = useState(connected);
-  // username and room now managed by context
   return (
     <ChatProvider>
       <section className="mx-auto flex items-center justify-center flex-col gap-6">
         {loggedIn ? (
-          <Chat messages={messages} send={send} />
+          <Chat messages={messages} send={send} clearMessages={clearMessages} />
         ) : (
           <Login connected={loggedIn} send={send} setLoggedIn={setLoggedIn} />
         )}

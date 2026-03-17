@@ -1,5 +1,4 @@
-
-import React from 'react';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
@@ -14,8 +13,8 @@ type LoginProps = {
 };
 
 export const Login: React.FC<LoginProps> = ({ connected, send, setLoggedIn }) => {
-  const [usernameInput, setUsernameInput] = React.useState('');
-  const [roomInput, setRoomInput] = React.useState('');
+  const [usernameInput, setUsernameInput] = useState('');
+  const [roomInput, setRoomInput] = useState('');
   const { setUsername, setRoom } = useChatContext();
 
   const onLogin = () => {

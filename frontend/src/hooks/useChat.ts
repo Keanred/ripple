@@ -1,10 +1,9 @@
-// src/hooks/useChat.ts
 import { useEffect, useRef, useState } from "react";
-import type { ClientPacket, ServerPacket, ChatPacket } from "../types/packetTypes";
+import type { ClientPacket, ServerPacket } from "../types/packetTypes";
 
 export const useChat = () => {
   const ws = useRef<WebSocket | null>(null);
-  const [messages, setMessages] = useState<ChatPacket[]>([]);
+  const [messages, setMessages] = useState<ServerPacket[]>([]);
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
@@ -14,9 +13,7 @@ export const useChat = () => {
 
     ws.current.onmessage = (event) => {
       const packet = JSON.parse(event.data) as ServerPacket;
-      if (packet.type === "chat") {
-        setMessages((prev) => [...prev, packet]);
-      }
+      setMessages((prev) => [...prev, packet]);
     };
 
     ws.current.onclose = () => setConnected(false);
@@ -28,5 +25,7 @@ export const useChat = () => {
     ws.current?.send(JSON.stringify(packet));
   };
 
-  return { messages, connected, send };
+  const clearMessages = () => setMessages([]);
+
+  return { messages, connected, send, clearMessages };
 };
