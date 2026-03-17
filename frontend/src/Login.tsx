@@ -7,34 +7,36 @@ import { useChatContext } from './ChatContext';
 import type { ClientPacket } from './types/packetTypes';
 
 type LoginProps = {
-  connected: boolean;
+  socketConnected: boolean;
   send: (packet: ClientPacket) => void;
-  setLoggedIn: (loggedIn: boolean) => void;
+  setHasJoined: (hasJoined: boolean) => void;
 };
 
-export const Login: React.FC<LoginProps> = ({ connected, send, setLoggedIn }) => {
+export const Login: React.FC<LoginProps> = ({ socketConnected, send, setHasJoined }) => {
   const [usernameInput, setUsernameInput] = useState('');
   const [roomInput, setRoomInput] = useState('');
   const { setUsername, setRoom } = useChatContext();
 
   const onLogin = () => {
-    if (!connected) {
-      if (usernameInput.trim() === '' || roomInput.trim() === '') {
-        alert('Please enter both username and room.');
-        return;
-      }
-      setUsername(usernameInput);
-      setRoom(roomInput);
-      const packet: ClientPacket = {
-        type: 'join',
-        username: usernameInput,
-        room: roomInput,
-      };
-      send(packet);
-      setLoggedIn(true);
-    } else {
-      alert('Already connected!');
+    if (!socketConnected) {
+      alert('WebSocket is not connected yet. Please wait and try again.');
+      return;
     }
+
+    if (usernameInput.trim() === '' || roomInput.trim() === '') {
+      alert('Please enter both username and room.');
+      return;
+    }
+
+    setUsername(usernameInput);
+    setRoom(roomInput);
+    const packet: ClientPacket = {
+      type: 'join',
+      username: usernameInput,
+      room: roomInput,
+    };
+    send(packet);
+    setHasJoined(true);
   };
 
   return (

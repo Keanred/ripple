@@ -7,7 +7,7 @@ import { Login } from './Login';
 
 function App() {
   const { messages, connected, send, clearMessages } = useChat();
-  const [loggedIn, setLoggedIn] = useState(connected);
+  const [hasJoined, setHasJoined] = useState(false);
   return (
     <ChatProvider>
       <Stack
@@ -22,10 +22,10 @@ function App() {
           minHeight: '100vh',
         }}
       >
-        {loggedIn ? (
-          <Chat messages={messages} send={send} clearMessages={clearMessages} />
+        {hasJoined ? (
+          <Chat messages={messages} send={send} clearMessages={clearMessages} connected={connected} />
         ) : (
-          <Login connected={loggedIn} send={send} setLoggedIn={setLoggedIn} />
+          <Login socketConnected={connected} send={send} setHasJoined={setHasJoined} />
         )}
       </Stack>
     </ChatProvider>

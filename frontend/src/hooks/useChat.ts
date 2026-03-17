@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import config from '../../../server/config';
 import type { ClientPacket, ServerPacket } from '../types/packetTypes';
+
+const wsUrl = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8080';
 
 export const useChat = () => {
   const ws = useRef<WebSocket | null>(null);
@@ -8,7 +9,7 @@ export const useChat = () => {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    ws.current = new WebSocket(`ws://localhost:${config.port}`);
+    ws.current = new WebSocket(wsUrl);
 
     ws.current.onopen = () => setConnected(true);
 

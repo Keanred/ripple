@@ -1,4 +1,4 @@
-import { Input, Paper } from '@mui/material';
+import { Button, Input, Paper } from '@mui/material';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import { useChatContext } from './ChatContext';
@@ -8,9 +8,10 @@ type ChatProps = {
   messages: ServerPacket[];
   send: (packet: ClientPacket) => void;
   clearMessages: () => void;
+  connected: boolean;
 };
 
-export const Chat: React.FC<ChatProps> = ({ messages, send, clearMessages }) => {
+export const Chat: React.FC<ChatProps> = ({ messages, send, clearMessages, connected }) => {
   const [input, setInput] = useState('');
   const { username, room, setRoom } = useChatContext();
 
@@ -85,9 +86,10 @@ export const Chat: React.FC<ChatProps> = ({ messages, send, clearMessages }) => 
       bgcolor="background.default"
     >
       <Box bgcolor="background.paper" p={4} borderRadius={4} boxShadow={3} maxWidth={1024} width="100%">
-        <h1>Chat Component</h1>
+        <h1>Chat</h1>
         <div>Room: {room}</div>
         <div>Username: {username}</div>
+        <div>Connection: {connected ? 'Connected' : 'Disconnected'}</div>
         <Paper
           variant="outlined"
           sx={{ height: 800, overflowY: 'auto', mb: 2, display: 'flex', flexDirection: 'column-reverse' }}
@@ -104,7 +106,7 @@ export const Chat: React.FC<ChatProps> = ({ messages, send, clearMessages }) => 
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
           />
-          <button onClick={handleSend}>Send</button>
+          <Button onClick={handleSend}>Send</Button>
         </Box>
       </Box>
     </Box>
